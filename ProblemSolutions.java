@@ -38,12 +38,25 @@ public class ProblemSolutions {
 
         for (int i = 0; i < n - 1; i++) {
 
-            // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
-            // "SELECTION SORT" ALGORITHM.
-            // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
+            int best = i; 
 
+            for (int j = i + 1; j < n; j++) {
+
+                if (ascending) {
+                    if (values[j] < values[best]) {
+                        best = j;
+                    }
+                } else { 
+                    if (values[j] > values[best]) {
+                        best = j;
+                    }
+                }
+            }
+
+            int temp = values[i];
+            values[i] = values[best];
+            values[best] = temp;
         }
-
     } // End class selectionSort
 
 
@@ -90,20 +103,45 @@ public class ProblemSolutions {
      * The merging portion of the merge sort, divisible by k first
      */
 
-    private void mergeDivisbleByKFirst(int arr[], int k, int left, int mid, int right)
-    {
-        // YOUR CODE GOES HERE, THIS METHOD IS NO MORE THAN THE STANDARD MERGE PORTION
-        // OF A MERGESORT, EXCEPT THE NUMBERS DIVISIBLE BY K MUST GO FIRST WITHIN THE
-        // SEQUENCE PER THE DISCUSSION IN THE PROLOGUE ABOVE.
-        //
-        // NOTE: YOU CAN PROGRAM THIS WITH A SPACE COMPLEXITY OF O(1) OR O(N LOG N).
-        // AGAIN, THIS IS REFERRING TO SPACE COMPLEXITY. O(1) IS IN-PLACE, O(N LOG N)
-        // ALLOCATES AUXILIARY DATA STRUCTURES (TEMPORARY ARRAYS). IT WILL BE EASIER
-        // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
-        // OF THIS PROGRAMMING EXERCISES.
+    private void mergeDivisbleByKFirst(int arr[], int k, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
 
-        return;
+        int[] leftArr = new int[n1];
+        int[] rightArr = new int[n2];
 
+        for (int i = 0; i < n1; i++) leftArr[i] = arr[left + i];
+        for (int j = 0; j < n2; j++) rightArr[j] = arr[mid + 1 + j];
+
+        int i = 0;
+        int j = 0;
+        int p = left;
+
+        while (i < n1 && j < n2) {
+
+            boolean leftDiv = (leftArr[i] % k == 0);
+            boolean rightDiv = (rightArr[j] % k == 0);
+
+            if (leftDiv && !rightDiv) {
+                arr[p++] = leftArr[i++];
+            }
+            else if (!leftDiv && rightDiv) {
+                arr[p++] = rightArr[j++];
+            }
+            else if (leftDiv && rightDiv) {
+                arr[p++] = leftArr[i++];
+            }
+            else {
+                if (leftArr[i] <= rightArr[j]) {
+                    arr[p++] = leftArr[i++];
+                } else {
+                    arr[p++] = rightArr[j++];
+                }    
+            }
+        }
+
+        while (i < n1) arr[p++] = leftArr[i++];
+        while (j < n2) arr[p++] = rightArr[j++];
     }
 
 
@@ -153,10 +191,18 @@ public class ProblemSolutions {
      */
 
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
+        Arrays.sort(asteroids);
 
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
+        long current = mass;
 
-        return false;
+        for (int a : asteroids) {
+            if (current < a) {
+                return false;
+            }
+            current += a;
+        }
+
+        return true;
 
     }
 
@@ -191,11 +237,32 @@ public class ProblemSolutions {
      */
 
     public static int numRescueSleds(int[] people, int limit) {
+        if (people.length == 0) return 0;
 
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
+        Arrays.sort(people);
 
-        return -1;
+        int left = 0;
+        int right = people.length - 1;
+        int sleds = 0;
 
+        while (left <= right) {
+
+            if (left == right) {
+                sleds++;
+                break;
+            }
+
+            if (people[left] + people[right] <= limit) {
+                left++;
+                right--;
+            } else {
+                right--;
+            }
+
+            sleds++;
+        }
+
+        return sleds;
     }
 
 } // End Class ProblemSolutions
